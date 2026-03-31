@@ -1,6 +1,11 @@
-import { supabase } from '../lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 
 export default async function FeedPage() {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
   const { data: posts } = await supabase
     .from('posts')
     .select('*')
