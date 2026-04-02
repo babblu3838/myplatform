@@ -39,26 +39,28 @@ export default function CirclesPage() {
     const { data: members } = await supabase.from('circle_members').select('*').eq('circle_id', circles[0].id)
     if (members && members.length >= 8) { alert('This circle is full!'); return }
     await supabase.from('circle_members').insert({ circle_id: circles[0].id, username })
-    setDone('joined')
-    setCircleName(circles[0].name)
+    window.location.href = `/circle-room/${circles[0].id}`
   }
 
   if (done === 'created') return (
     <main style={{ maxWidth: '500px', margin: '0 auto', padding: '40px 20px', fontFamily: 'sans-serif' }}>
-      <h1 style={{ fontSize: '22px', fontWeight: '500', marginBottom: '8px' }}>Circle created!</h1>
-      <p style={{ color: '#666', marginBottom: '24px' }}>Share this code with your friends:</p>
-      <div style={{ background: '#f5f5f5', borderRadius: '12px', padding: '24px', textAlign: 'center', marginBottom: '24px' }}>
-        <div style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '8px' }}>{inviteCode}</div>
-        <div style={{ fontSize: '13px', color: '#999', marginTop: '8px' }}>Invite code</div>
+      <h1 style={{ fontSize: '22px', fontWeight: '500', marginBottom: '8px' }}>Circle created! 🎉</h1>
+      <p style={{ color: '#666', marginBottom: '20px' }}>Share this link with your friends — they just open it and join!</p>
+      <div style={{ background: '#f5f5f5', borderRadius: '12px', padding: '20px', marginBottom: '16px' }}>
+        <div style={{ fontSize: '12px', color: '#999', marginBottom: '8px' }}>Your shareable link:</div>
+        <div style={{ fontSize: '14px', fontWeight: '500', wordBreak: 'break-all', color: '#000', marginBottom: '12px' }}>
+          {typeof window !== 'undefined' ? window.location.origin : ''}/join/{inviteCode}
+        </div>
+        <button
+          onClick={() => navigator.clipboard.writeText(`${window.location.origin}/join/${inviteCode}`)}
+          style={{ padding: '8px 16px', background: '#000', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', cursor: 'pointer' }}
+        >
+          Copy link
+        </button>
       </div>
-      <a href="/" style={{ display: 'inline-block', padding: '12px 24px', background: '#000', color: '#fff', borderRadius: '8px', textDecoration: 'none' }}>Go home →</a>
-    </main>
-  )
-
-  if (done === 'joined') return (
-    <main style={{ maxWidth: '500px', margin: '0 auto', padding: '40px 20px', fontFamily: 'sans-serif' }}>
-      <h1 style={{ fontSize: '22px', fontWeight: '500', marginBottom: '8px' }}>You joined {circleName}!</h1>
-      <a href="/" style={{ display: 'inline-block', padding: '12px 24px', background: '#000', color: '#fff', borderRadius: '8px', textDecoration: 'none' }}>Go home →</a>
+      <a href={`/circle-room/${inviteCode}`} style={{ display: 'inline-block', padding: '12px 24px', background: '#000', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontSize: '14px' }}>
+        Enter your circle →
+      </a>
     </main>
   )
 
